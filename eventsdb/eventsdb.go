@@ -1,27 +1,28 @@
 package eventsdb
 
 import (
-	"log"
 	"context"
+	"log"
 
 	"errors"
+
+	"cloud.google.com/go/firestore"
 	"github.com/google/uuid"
 	"google.golang.org/api/iterator"
-	"cloud.google.com/go/firestore"
 )
 
 type Event struct {
-    ID     string `json:"id"`
-    Title  string `json:"title"`
-    Location string `json:"location"`
-    When   string `json:"when"`
+	ID       string `json:"id"`
+	Title    string `json:"title"`
+	Location string `json:"location"`
+	When     string `json:"when"`
 }
 
 var Events []Event
 
 func createClient(ctx context.Context) *firestore.Client {
 	// Sets your Google Cloud Platform project ID.
-	projectID := "brave-arcadia-325423"
+	projectID := "roi-takeoff-user24"
 	// !! ^^^^^^^^^^^^ !!!
 
 	client, err := firestore.NewClient(ctx, projectID)
@@ -54,7 +55,7 @@ func GetEvents() []Event {
 		doc.DataTo(&doca)
 		docos = append(docos, doca)
 	}
-  return docos
+	return docos
 }
 
 func GetEventbyID(id string) (Event, error) {
@@ -64,7 +65,7 @@ func GetEventbyID(id string) (Event, error) {
 	defer client.Close()
 	doc, err := client.Collection("events").Doc(id).Get(ctx)
 	if err != nil {
-        return Event{}, errors.New("not found")
+		return Event{}, errors.New("not found")
 	}
 
 	doc.DataTo(&event)
@@ -81,7 +82,7 @@ func AddEvent(event Event) {
 	_, err := client.Collection("events").Doc(newID).Set(ctx, event)
 
 	if err != nil {
-        log.Fatalf("Failed adding alovelace: %v", err)
+		log.Fatalf("Failed adding alovelace: %v", err)
 	}
 }
 
@@ -93,10 +94,9 @@ func UpdateEvent(event Event) {
 	_, err := client.Collection("events").Doc(event.ID).Set(ctx, event)
 
 	if err != nil {
-        log.Fatalf("Failed adding alovelace: %v", err)
+		log.Fatalf("Failed adding alovelace: %v", err)
 	}
 }
-
 
 func DeleteEvent(id string) {
 	ctx := context.Background()
@@ -105,7 +105,7 @@ func DeleteEvent(id string) {
 
 	_, err := client.Collection("events").Doc(id).Delete(ctx)
 	if err != nil {
-        // Handle any errors in an appropriate way, such as returning them.
-        log.Printf("An error has occurred: %s", err)
+		// Handle any errors in an appropriate way, such as returning them.
+		log.Printf("An error has occurred: %s", err)
 	}
 }

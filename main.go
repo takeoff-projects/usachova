@@ -6,9 +6,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"drehnstrom.com/go-website/eventsdb"
-	"github.com/gorilla/mux")
 
+	"drehnstrom.com/go-website/eventsdb"
+	"github.com/gorilla/mux"
+)
 
 func main() {
 	port := os.Getenv("PORT")
@@ -156,13 +157,11 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 func deleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	eventsdb.DeleteEvent(mux.Vars(r)["id"])
-	log.Println("Event deleted",mux.Vars(r)["id"])
+	log.Println("Event deleted", mux.Vars(r)["id"])
 
 	// Go back to home page
 	http.Redirect(w, r, "/", http.StatusFound)
 }
-
-
 
 // HomePageData for Index template
 type HomePageData struct {
